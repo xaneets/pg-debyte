@@ -1,0 +1,23 @@
+[package]
+name = "pg_debyte_core"
+version = "0.1.0"
+edition = "2021"
+authors = ["Dmitriy Sergeev <xaneets@gmail.com>"]
+description = "Core building blocks for PostgreSQL extensions that decode bytea into JSON"
+license = "Apache-2.0"
+readme = "../README.md"
+repository = "https://github.com/Xaneets/pg-debyte"
+homepage = "https://github.com/Xaneets/pg-debyte"
+keywords = ["postgres", "postgresql", "bytea", "json", "pgrx"]
+categories = ["database", "encoding"]
+
+[dependencies]
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+uuid = { version = "1.8", features = ["serde", "v4"] }
+thiserror = "1.0"
+bincode = "1.3"
+zstd = "0.13"
+
+[dev-dependencies]
+hex = "0.4"

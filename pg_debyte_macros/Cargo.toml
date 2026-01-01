@@ -1,0 +1,15 @@
+[package]
+name = "pg_debyte_macros"
+version = "0.1.0"
+edition = "2021"
+authors = ["Dmitriy Sergeev <xaneets@gmail.com>"]
+description = "Helper macros for registering typed decoders in pg_debyte"
+license = "Apache-2.0"
+readme = "../README.md"
+repository = "https://github.com/Xaneets/pg-debyte"
+homepage = "https://github.com/Xaneets/pg-debyte"
+keywords = ["postgres", "postgresql", "bytea", "json", "pgrx"]
+categories = ["database", "development-tools"]
+
+[dependencies]
+pg_debyte_core = { path = "../pg_debyte_core" }

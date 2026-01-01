@@ -1,0 +1,5 @@
+comment = 'pg_debyte example extension'
+default_version = '0.1.0'
+module_pathname = '$libdir/pg_debyte_ext'
+relocatable = true
+superuser = false

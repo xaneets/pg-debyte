@@ -1,0 +1,7 @@
+[workspace]
+members = [
+  "pg_debyte_core", "pg_debyte_ext",
+  "pg_debyte_macros",
+  "pg_debyte_pgrx", "pg_debyte_tools",
+]
+resolver = "2"
