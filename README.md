@@ -1,7 +1,8 @@
 # pg-debyte
 
 [![Build](https://github.com/Xaneets/pg-debyte/actions/workflows/build.yml/badge.svg)](https://github.com/Xaneets/pg-debyte/actions/workflows/build.yml)
-[![tests](https://github.com/Xaneets/pg-debyte/actions/workflows/tests.yml/badge.svg)](https://github.com/Xaneets/pg-debyte/actions/workflows/tests.yml)
+[![Workspace tests](https://img.shields.io/github/actions/workflow/status/Xaneets/pg-debyte/tests.yml?branch=main&job=core-tests&label=workspace%20tests)](https://github.com/Xaneets/pg-debyte/actions/workflows/tests.yml)
+[![PG extension tests](https://img.shields.io/github/actions/workflow/status/Xaneets/pg-debyte/tests.yml?branch=main&job=pg-extension-tests&label=pg%20extension%20tests)](https://github.com/Xaneets/pg-debyte/actions/workflows/tests.yml)
 [![Crates.io](https://img.shields.io/crates/v/pg_debyte_core.svg)](https://crates.io/crates/pg_debyte_core)
 
 Core building blocks for PostgreSQL extensions that decode `bytea` into JSON.
@@ -84,5 +85,5 @@ cargo run -p pg_debyte_tools --bin demo_auto_sql
 If host permissions make `cargo pgrx test` difficult, use the Docker runner:
 
 ```bash
-./scripts/docker-test.sh
+./scripts/docker-ci-test-pg-extension.sh
 ```

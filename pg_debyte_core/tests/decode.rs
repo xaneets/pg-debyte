@@ -3,6 +3,7 @@ use pg_debyte_core::action::ZstdAction;
 use pg_debyte_core::codec::{BincodeCodec, Codec};
 use pg_debyte_core::error::DecodeError;
 use pg_debyte_core::types::DecodeLimits;
+use pg_debyte_core::types::EncodeLimits;
 use pg_debyte_core::ByteAction;
 use serde::{Deserialize, Serialize};
 
@@ -41,6 +42,60 @@ fn zstd_decode_respects_limit() {
         DecodeError::LimitExceeded { context, .. } => {
             assert_eq!(context, "action_output_bytes");
         }
+        other => panic!("unexpected error: {other:?}"),
+    }
+}
+
+#[test]
+fn zstd_encode_respects_limit() {
+    let payload = b"hello hello hello";
+    let action = ZstdAction::new(1);
+    let limits = EncodeLimits::new(1);
+    let err = action
+        .encode(payload, &limits, &[])
+        .expect_err("expected limit error");
+    match err {
+        DecodeError::LimitExceeded { context, .. } => {
+            assert_eq!(context, "action_output_bytes");
+        }
+        other => panic!("unexpected error: {other:?}"),
+    }
+}
+
+#[test]
+fn bincode_decode_respects_limits() {
+    let demo: Vec<u8> = vec![0u8; 1024];
+    let bytes = bincode::DefaultOptions::new()
+        .with_limit(2048)
+        .serialize(&demo)
+        .expect("serialize");
+    assert!(bytes.len() > 64);
+    let codec = BincodeCodec::new(1, 1024);
+    let limits = DecodeLimits::new(1024, 64, 1024);
+    let err: DecodeError = codec
+        .decode::<Vec<u8>>(&bytes, &limits)
+        .expect_err("expected limit error");
+    match err {
+        DecodeError::LimitExceeded { context, .. } => {
+            assert_eq!(context, "codec_input_bytes");
+        }
+        other => panic!("unexpected error: {other:?}"),
+    }
+}
+
+#[test]
+fn bincode_encode_respects_limits() {
+    let demo = Demo {
+        id: 1,
+        name: "demo".repeat(64),
+    };
+    let codec = BincodeCodec::new(1, 16);
+    let limits = pg_debyte_core::types::EncodeLimits::new(16);
+    let err = codec
+        .encode(&demo, &limits)
+        .expect_err("expected limit error");
+    match err {
+        DecodeError::Bincode(_) => {}
         other => panic!("unexpected error: {other:?}"),
     }
 }

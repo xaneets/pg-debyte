@@ -41,6 +41,13 @@ impl Codec for BincodeCodec {
         limits: &DecodeLimits,
     ) -> Result<T, DecodeError> {
         let limit = self.byte_limit.min(limits.max_output_bytes as u64);
+        if bytes.len() as u64 > limit {
+            return Err(DecodeError::LimitExceeded {
+                context: "codec_input_bytes",
+                limit: limit as usize,
+                actual: bytes.len(),
+            });
+        }
         bincode::DefaultOptions::new()
             .with_limit(limit)
             .deserialize(bytes)

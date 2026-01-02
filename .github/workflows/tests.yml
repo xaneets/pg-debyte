@@ -5,7 +5,17 @@ on:
   pull_request:
 
 jobs:
-  tests:
+  core-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Build docker image
+        run: ./scripts/docker-ci-build-image.sh
+      - name: Workspace tests (exclude pg_debyte_ext)
+        run: ./scripts/docker-ci-test-workspace.sh
+  pg-extension-tests:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -14,4 +24,4 @@ jobs:
       - name: Build docker image
         run: ./scripts/docker-ci-build-image.sh
       - name: Docker tests
-        run: ./scripts/docker-ci-test.sh
+        run: ./scripts/docker-ci-test-pg-extension.sh
