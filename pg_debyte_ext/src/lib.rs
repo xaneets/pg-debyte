@@ -140,4 +140,38 @@ mod tests {
 
         assert!(!ok);
     }
+
+    #[pg_test]
+    fn test_guc_max_input_bytes() {
+        let ok = PgTryBuilder::new(|| {
+            Spi::run("SET LOCAL pg_debyte.max_input_bytes = 8").expect("set guc");
+            let _ = Spi::get_one::<JsonB>(
+                "SELECT bytea_to_json_by_id(decode('0102030405', 'hex'), \
+                 '11111111-1111-1111-1111-111111111111'::uuid, 1::smallint)",
+            )
+            .expect("spi");
+            true
+        })
+        .catch_others(|_| false)
+        .execute();
+
+        assert!(!ok);
+    }
+
+    #[pg_test]
+    fn test_guc_max_json_bytes() {
+        let ok = PgTryBuilder::new(|| {
+            Spi::run("SET LOCAL pg_debyte.max_json_bytes = 8").expect("set guc");
+            let _ = Spi::get_one::<JsonB>(
+                "SELECT bytea_to_json_by_id(decode('010464656d6f', 'hex'), \
+                 '11111111-1111-1111-1111-111111111111'::uuid, 1::smallint)",
+            )
+            .expect("spi");
+            true
+        })
+        .catch_others(|_| false)
+        .execute();
+
+        assert!(!ok);
+    }
 }

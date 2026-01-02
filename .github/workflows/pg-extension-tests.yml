@@ -16,6 +16,4 @@ jobs:
       - name: PGRX tests (pg_debyte_ext)
         run: ./scripts/docker-ci-test-pg-extension.sh
       - name: Workspace tests (include pg_debyte_pgrx)
-        run: docker run --rm -t pg-debyte-ci bash -lc "\
-            cargo test --workspace --exclude pg_debyte_ext \
-          "
+        run: docker run --rm -t pg-debyte-ci bash -lc "/usr/local/cargo/bin/cargo test --workspace --exclude pg_debyte_ext"
