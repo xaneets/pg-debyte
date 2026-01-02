@@ -1,0 +1,17 @@
+name: core-tests
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  core-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+      - name: Workspace tests (exclude pgrx/extension)
+        run: cargo test --workspace --exclude pg_debyte_ext --exclude pg_debyte_pgrx
