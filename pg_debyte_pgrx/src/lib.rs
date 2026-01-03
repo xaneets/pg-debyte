@@ -3,6 +3,7 @@ use pg_debyte_core::envelope::{try_parse, ParsedEnvelope};
 use pg_debyte_core::error::DecodeError;
 use pg_debyte_core::registry::Registry;
 use pg_debyte_core::types::{DecodeLimits, TypeKey};
+use pg_debyte_core::DecoderEntry;
 use pgrx::guc::{GucContext, GucFlags, GucRegistry, GucSetting};
 use std::sync::OnceLock;
 use uuid::Uuid;
@@ -84,6 +85,23 @@ pub fn decode_by_id(
         .ok_or(DecodeError::UnknownType(key))?;
     let payload = apply_actions_refs(reg, entry.default_actions(), data, limits)?;
     let value = entry.decode_payload(&payload, limits)?;
+    ensure_json_limit(&value, limits)?;
+    Ok(value)
+}
+
+pub fn decode_know_schema(
+    data: &[u8],
+    decoder: &dyn DecoderEntry,
+    limits: &DecodeLimits,
+) -> Result<serde_json::Value, DecodeError> {
+    ensure_limit("input_bytes", data.len(), limits.max_input_bytes)?;
+    let value = if decoder.default_actions().is_empty() {
+        decoder.decode_payload(data, limits)?
+    } else {
+        let reg = registry()?;
+        let payload = apply_actions_refs(reg, decoder.default_actions(), data, limits)?;
+        decoder.decode_payload(&payload, limits)?
+    };
     ensure_json_limit(&value, limits)?;
     Ok(value)
 }

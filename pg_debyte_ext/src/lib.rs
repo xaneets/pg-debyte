@@ -12,7 +12,7 @@ pub mod pg_test {
     }
 }
 use pg_debyte_core::{BincodeCodec, DecodeError, StaticRegistry, ZstdAction};
-use pg_debyte_macros::declare_decoder;
+use pg_debyte_macros::{declare_decoder, declare_know_schema};
 use serde::{Deserialize, Serialize};
 use uuid::Uuid as CoreUuid;
 
@@ -40,6 +40,27 @@ declare_decoder!(
     codec = DEMO_CODEC,
     codec_ty = BincodeCodec,
     actions = []
+);
+
+#[derive(Debug, Deserialize, Serialize)]
+struct DemoRecordSecond {
+    id: u32,
+    text: String,
+    flag: bool,
+}
+
+const DEMO_SECOND_TYPE_ID: CoreUuid = CoreUuid::from_bytes([0xa3; 16]);
+const DEMO_SECOND_SCHEMA_VERSION: u16 = 1;
+
+declare_know_schema!(
+    DEMO_DECODER_SECOND,
+    ty = DemoRecordSecond,
+    type_id = DEMO_SECOND_TYPE_ID,
+    schema_version = DEMO_SECOND_SCHEMA_VERSION,
+    codec = DEMO_CODEC,
+    codec_ty = BincodeCodec,
+    actions = [],
+    fn_name = bytea_to_json_demo_record_second
 );
 
 static REGISTRY: StaticRegistry = StaticRegistry::new(&[&DEMO_DECODER], &[&ZSTD_ACTION]);
@@ -165,6 +186,64 @@ mod tests {
             let _ = Spi::get_one::<JsonB>(
                 "SELECT bytea_to_json_by_id(decode('010464656d6f', 'hex'), \
                  '11111111-1111-1111-1111-111111111111'::uuid, 1::smallint)",
+            )
+            .expect("spi");
+            true
+        })
+        .catch_others(|_| false)
+        .execute();
+
+        assert!(!ok);
+    }
+
+    #[pg_test]
+    fn test_bytea_to_json_know_schema() {
+        let json = Spi::get_one::<JsonB>(
+            "SELECT bytea_to_json_demo_record_second(decode('01067365636f6e6401', 'hex'))",
+        )
+        .expect("spi")
+        .expect("json");
+
+        assert_eq!(json.0, json!({"id": 1, "text": "second", "flag": true}));
+    }
+
+    #[pg_test]
+    fn test_know_schema_guc_max_input_bytes() {
+        let ok = PgTryBuilder::new(|| {
+            Spi::run("SET LOCAL pg_debyte.max_input_bytes = 8").expect("set guc");
+            let _ = Spi::get_one::<JsonB>(
+                "SELECT bytea_to_json_demo_record_second(decode('01067365636f6e6401', 'hex'))",
+            )
+            .expect("spi");
+            true
+        })
+        .catch_others(|_| false)
+        .execute();
+
+        assert!(!ok);
+    }
+
+    #[pg_test]
+    fn test_know_schema_guc_max_json_bytes() {
+        let ok = PgTryBuilder::new(|| {
+            Spi::run("SET LOCAL pg_debyte.max_json_bytes = 8").expect("set guc");
+            let _ = Spi::get_one::<JsonB>(
+                "SELECT bytea_to_json_demo_record_second(decode('01067365636f6e6401', 'hex'))",
+            )
+            .expect("spi");
+            true
+        })
+        .catch_others(|_| false)
+        .execute();
+
+        assert!(!ok);
+    }
+
+    #[pg_test]
+    fn test_know_schema_decode_error() {
+        let ok = PgTryBuilder::new(|| {
+            let _ = Spi::get_one::<JsonB>(
+                "SELECT bytea_to_json_demo_record_second(decode('010464656d6f', 'hex'))",
             )
             .expect("spi");
             true

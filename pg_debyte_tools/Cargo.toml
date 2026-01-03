@@ -22,6 +22,11 @@ path = "src/demo_envelope.rs"
 name = "demo_auto_sql"
 path = "src/demo_auto_sql.rs"
 
+[[bin]]
+name = "demo_second_payload"
+path = "src/demo_second_payload.rs"
+
+
 [dependencies]
 serde = { version = "1.0", features = ["derive"] }
 bincode = "1.3"
