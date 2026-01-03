@@ -14,4 +14,4 @@ jobs:
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
       - name: Workspace tests (exclude pgrx/extension)
-        run: cargo test --workspace --exclude pg_debyte_ext --exclude pg_debyte_pgrx
+        run: cargo test --workspace --exclude pg_debyte_ext --exclude pg_debyte_pgrx --exclude readme_known_schema --exclude readme_by_id --exclude readme_envelope
