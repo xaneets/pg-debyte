@@ -1,6 +1,6 @@
 [package]
 name = "pg_debyte_pgrx"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2021"
 authors = ["Dmitriy Sergeev <xaneets@gmail.com>"]
 description = "PG17-only pgrx glue for pg_debyte (GUCs and decode helpers)"
@@ -12,7 +12,7 @@ keywords = ["postgres", "postgresql", "bytea", "json", "pgrx"]
 categories = ["database"]
 
 [dependencies]
-pg_debyte_core = { version = "0.1.0", path = "../pg_debyte_core" }
+pg_debyte_core = { version = "0.2.0", path = "../pg_debyte_core" }
 serde_json = "1.0"
 uuid = "1.8"
 

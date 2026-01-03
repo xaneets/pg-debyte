@@ -22,6 +22,7 @@ This repository provides reusable Rust crates plus a small example extension.
 - Action pipeline (decode in reverse) with bounded zstd decode.
 - Bincode codec with size limits.
 - Static registry for decoders/codecs/actions.
+- Known schema SQL functions (per-type decoding without envelope).
 - PG17-only helper for GUC limits and decoding (to be called from extension).
 
 ## Notes
@@ -41,9 +42,9 @@ cd my_pg_debyte_ext
 ```toml
 [dependencies]
 pgrx = { version = "0.16.1", default-features = false, features = ["pg17"] }
-pg_debyte_core = "0.1.0"
-pg_debyte_macros = "0.1.0"
-pg_debyte_pgrx = "0.1.0"
+pg_debyte_core = "0.2.0"
+pg_debyte_macros = "0.2.0"
+pg_debyte_pgrx = "0.2.0"
 serde = { version = "1.0", features = ["derive"] }
 uuid = "1.8"
 bincode = "1.3"
