@@ -16,10 +16,10 @@ patch_args=(
 for crate in "${crates[@]}"; do
   if [[ "${crate}" == "pg_debyte_core" ]]; then
     echo "==> cargo package -p ${crate}"
-    cargo package -p "${crate}"
+    cargo package -p "${crate}" --allow-dirty
   else
     echo "==> cargo package -p ${crate} --no-verify"
-    cargo package -p "${crate}" --no-verify "${patch_args[@]}"
+    cargo package -p "${crate}" --no-verify "${patch_args[@]}" --allow-dirty
   fi
   echo
 done

@@ -886,7 +886,7 @@ dependencies = [
 
 [[package]]
 name = "pg_debyte_core"
-version = "0.2.0"
+version = "0.2.1"
 dependencies = [
  "bincode",
  "hex",
@@ -914,14 +914,14 @@ dependencies = [
 
 [[package]]
 name = "pg_debyte_macros"
-version = "0.2.0"
+version = "0.2.1"
 dependencies = [
  "pg_debyte_core",
 ]
 
 [[package]]
 name = "pg_debyte_pgrx"
-version = "0.2.0"
+version = "0.2.1"
 dependencies = [
  "pg_debyte_core",
  "pgrx",

@@ -51,9 +51,9 @@ cd my_pg_debyte_ext
 [dependencies]
 pgrx = { version = "0.16.1", default-features = false, features = ["pg17"] }
 # or: features = ["pg15"]
-pg_debyte_core = "0.2.0"
-pg_debyte_macros = "0.2.0"
-pg_debyte_pgrx = { version = "0.2.0", default-features = false }
+pg_debyte_core = "0.2.1"
+pg_debyte_macros = "0.2.1"
+pg_debyte_pgrx = { version = "0.2.1", default-features = false }
 serde = { version = "1.0", features = ["derive"] }
 uuid = "1.8"
 ```
