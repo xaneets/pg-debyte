@@ -48,9 +48,9 @@ _docker_run() {
   local cmd="$1"
   echo "[pg-debyte] docker: ${cmd}"
   if [[ -t 1 ]]; then
-    docker run --rm -it --entrypoint bash pg-debyte-ci -lc "CARGO_TERM_PROGRESS_WHEN=auto PGRX_BUILD_VERBOSE=1 ${cmd}"
+    docker run --rm -it --entrypoint bash pg-debyte-ci -lc "TERM=xterm-256color CARGO_TERM_PROGRESS_WHEN=auto CARGO_TERM_COLOR=always PGRX_BUILD_VERBOSE=1 ${cmd}"
   else
-    docker run --rm -i --entrypoint bash pg-debyte-ci -lc "CARGO_TERM_PROGRESS_WHEN=auto PGRX_BUILD_VERBOSE=1 ${cmd}"
+    docker run --rm -i --entrypoint bash pg-debyte-ci -lc "TERM=xterm-256color CARGO_TERM_PROGRESS_WHEN=auto CARGO_TERM_COLOR=always PGRX_BUILD_VERBOSE=1 ${cmd}"
   fi
 }
 
@@ -66,12 +66,15 @@ _docker_tests_workspace() {
 
 _docker_build_workspace() {
   local ver="$1"
-  _docker_run "cargo build --workspace --all-targets --exclude pg_debyte_ext --exclude readme_known_schema --exclude readme_by_id --exclude readme_envelope --features ${ver} && cargo build -p pg_debyte_ext --all-targets --features ${ver}"
+  _docker_run "cargo build --workspace --all-targets --exclude pg_debyte_ext --exclude readme_known_schema --exclude readme_by_id --exclude readme_envelope --features ${ver}"
+  _docker_run "cargo build -p pg_debyte_ext --all-targets --features ${ver}"
 }
 
 _docker_build_examples() {
   local ver="$1"
-  _docker_run "cargo build -p readme_known_schema --all-targets --features ${ver} && cargo build -p readme_by_id --all-targets --features ${ver} && cargo build -p readme_envelope --all-targets --features ${ver}"
+  _docker_run "cargo build -p readme_known_schema --all-targets --features ${ver}"
+  _docker_run "cargo build -p readme_by_id --all-targets --features ${ver}"
+  _docker_run "cargo build -p readme_envelope --all-targets --features ${ver}"
 }
 
 _host_lints() {
