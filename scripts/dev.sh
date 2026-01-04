@@ -47,7 +47,11 @@ _host_examples() {
 _docker_run() {
   local cmd="$1"
   echo "[pg-debyte] docker: ${cmd}"
-  docker run --rm -it --entrypoint bash pg-debyte-ci -lc "CARGO_TERM_PROGRESS_WHEN=auto PGRX_BUILD_VERBOSE=1 ${cmd}"
+  if [[ -t 1 ]]; then
+    docker run --rm -it --entrypoint bash pg-debyte-ci -lc "CARGO_TERM_PROGRESS_WHEN=auto PGRX_BUILD_VERBOSE=1 ${cmd}"
+  else
+    docker run --rm -i --entrypoint bash pg-debyte-ci -lc "CARGO_TERM_PROGRESS_WHEN=auto PGRX_BUILD_VERBOSE=1 ${cmd}"
+  fi
 }
 
 _docker_tests_pg_extensions() {
